@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bostadskalkylator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="glass-card calculator">
+            <header class="calculator-header">
+                <h1>Bostadskalkylator</h1>
+                <p class="subtitle">Beräkna din bostadskostnad med precision</p>
+            </header>
+
+            <div class="calculator-content">
+                <div class="input-section">
+                    <div class="section-header">
+                        <h2>Lönekalkyl</h2>
+                        <div class="section-icon">💰</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bruttolon">Bruttolön</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="bruttolon" placeholder="Ange din bruttolön">
+                            <span class="input-suffix">SEK/månad</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="kommun">Kommun</label>
+                        <select id="kommun">
+                            <option value="">Välj kommun</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="kyrka">Medlem i kyrkan?</label>
+                        <div class="button-group">
+                            <button class="toggle-button active" data-value="ja">Ja</button>
+                            <button class="toggle-button" data-value="nej">Nej</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group" id="forsamling-group" style="display: none;">
+                        <label for="forsamling">Församling</label>
+                        <select id="forsamling">
+                            <option value="">Välj församling</option>
+                        </select>
+                    </div>
+
+                    <div class="additional-borrowers-section">
+                        <div class="section-header">
+                            <h2>Ytterligare lånetagare</h2>
+                            <div class="section-icon">👥</div>
+                        </div>
+                        <div id="additional-borrowers-container">
+                            <!-- Här kommer ytterligare lånetagare att läggas till dynamiskt -->
+                        </div>
+                        <button id="add-borrower" class="secondary-button">
+                            <span>+ Lägg till lånetagare</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <div class="section-header">
+                        <h2>Bostadskalkyl</h2>
+                        <div class="section-icon">🏠</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bostadspris">Bostadspris</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="bostadspris" placeholder="Ange bostadspris">
+                            <span class="input-suffix">SEK</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="handpenning">Handpenning</label>
+                        <div class="range-wrapper">
+                            <input type="range" id="handpenning" min="0" max="100" step="1" value="15">
+                            <div class="range-value">
+                                <span id="handpenning-value">15%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ranta">Ränta</label>
+                        <div class="range-wrapper">
+                            <input type="range" id="ranta" min="0" max="10" step="0.1" value="3.5">
+                            <div class="range-value">
+                                <span id="ranta-value">3.5%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="avgift">Avgift</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="avgift" placeholder="Ange avgift">
+                            <span class="input-suffix">SEK/månad</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="driftkostnad">Driftkostnader</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="driftkostnad" placeholder="Ange driftkostnader">
+                            <span class="input-suffix">SEK/månad</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ovriga-kostnader">Övriga kostnader</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="ovriga-kostnader" placeholder="Ange övriga kostnader">
+                            <span class="input-suffix">SEK/månad</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="berakna" class="primary-button">
+                    <span>Beräkna</span>
+                    <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </button>
+
+                <div class="result-section">
+                    <div class="section-header">
+                        <h2>Resultat</h2>
+                        <div class="section-icon">📊</div>
+                    </div>
+
+                    <div class="result-grid">
+                        <div class="result-card">
+                            <div class="result-icon">💵</div>
+                            <div class="result-content">
+                                <span class="result-label">Nettolön</span>
+                                <span class="result-value" id="nettolon">0 SEK</span>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+                            <div class="result-icon">📈</div>
+                            <div class="result-content">
+                                <span class="result-label">Räntekostnad</span>
+                                <span class="result-value" id="rantekostnad">0 SEK</span>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+                            <div class="result-icon">💸</div>
+                            <div class="result-content">
+                                <span class="result-label">Ränteavdrag</span>
+                                <span class="result-value" id="ranteavdrag">0 SEK</span>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+                            <div class="result-icon">💰</div>
+                            <div class="result-content">
+                                <span class="result-label">Amortering</span>
+                                <span class="result-value" id="amortering">0 SEK</span>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+                            <div class="result-icon">💳</div>
+                            <div class="result-content">
+                                <span class="result-label">Kontantinsats</span>
+                                <span class="result-value" id="kontantinsats">0 SEK</span>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+                            <div class="result-icon">📊</div>
+                            <div class="result-content">
+                                <span class="result-label">Total månadskostnad</span>
+                                <span class="result-value" id="total-kostnad">0 SEK</span>
+                            </div>
+                        </div>
+
+                        <div class="result-card highlight">
+                            <div class="result-icon">💸</div>
+                            <div class="result-content">
+                                <span class="result-label">Kvar efter kostnader</span>
+                                <span class="result-value" id="kvar-efter-kostnader">0 SEK</span>
+                            </div>
+                        </div>
+
+                        <div class="result-actions">
+                            <button id="toggle-ranteavdrag" class="secondary-button">
+                                <span>Inkludera ränteavdrag</span>
+                                <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 13l4 4L19 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calculation-explanation">
+                <div class="section-header expandable-header">
+                    <h2>Hur vi räknar</h2>
+                    <div class="section-icon">📝</div>
+                    <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+
+                <div class="explanation-steps">
+                    <div class="explanation-step">
+                        <div class="step-header">
+                            <span class="step-number">1</span>
+                            <h3>Nettolön</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Din bruttolön minus skatt baserat på din kommun och kyrkotillhörighet.</p>
+                            <div class="calculation-formula">
+                                <span class="formula">Bruttolön - Skatt = Nettolön</span>
+                                <span class="formula-result" id="nettolon-formula">0 SEK</span>
+                            </div>
+                            <div class="calculation-details">
+                                <p>Skattesatsen beräknas baserat på:</p>
+                                <ul>
+                                    <li>Din valda kommun</li>
+                                    <li>Om du är medlem i kyrkan</li>
+                                    <li>Din valda församling (om kyrklig)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="explanation-step">
+                        <div class="step-header">
+                            <span class="step-number">2</span>
+                            <h3>Lånebelopp</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Bostadspriset minus din handpenning.</p>
+                            <div class="calculation-formula">
+                                <span class="formula">Bostadspris - Handpenning = Lånebelopp</span>
+                                <span class="formula-result" id="lanebelopp-formula">0 SEK</span>
+                            </div>
+                            <div class="calculation-details">
+                                <p>Handpenningen beräknas som en procentandel av bostadspriset:</p>
+                                <ul>
+                                    <li>Minst 15% av bostadspriset krävs</li>
+                                    <li>Högre handpenning ger lägre lånebelopp</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="explanation-step">
+                        <div class="step-header">
+                            <span class="step-number">3</span>
+                            <h3>Månadskostnad</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Summan av ränta, amortering, avgift och driftkostnader.</p>
+                            <div class="calculation-formula">
+                                <span class="formula">Ränta + Amortering + Avgift + Driftkostnader =
+                                    Månadskostnad</span>
+                                <span class="formula-result" id="manadskostnad-formula">0 SEK</span>
+                            </div>
+                            <div class="calculation-details">
+                                <p>Detaljerad uppdelning:</p>
+                                <ul>
+                                    <li>Ränta: Beräknas på lånebeloppet med angiven räntesats</li>
+                                    <li>Amortering: Baseras på belåningsgrad och skuldkvot</li>
+                                    <li>Avgift: Fast månadsavgift för bostaden</li>
+                                    <li>Driftkostnader: Förväntade månatliga driftkostnader</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="explanation-step">
+                        <div class="step-header">
+                            <span class="step-number">4</span>
+                            <h3>Ränteavdrag</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Möjlig skattereduktion på räntekostnaden.</p>
+                            <div class="calculation-formula">
+                                <span class="formula">Räntekostnad × 30% = Ränteavdrag</span>
+                                <span class="formula-result" id="ranteavdrag-formula">0 SEK</span>
+                            </div>
+                            <div class="calculation-details">
+                                <p>Viktig information:</p>
+                                <ul>
+                                    <li>Maximalt 100 000 SEK per år</li>
+                                    <li>Beräknas på årsbasis och delas med 12</li>
+                                    <li>Kan inkluderas eller exkluderas från total kostnad</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="explanation-step">
+                        <div class="step-header">
+                            <span class="step-number">5</span>
+                            <h3>Kvar efter kostnader</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Din nettolön minus totala månadskostnaden.</p>
+                            <div class="calculation-formula">
+                                <span class="formula">Nettolön - Månadskostnad = Kvar efter kostnader</span>
+                                <span class="formula-result" id="kvar-formula">0 SEK</span>
+                            </div>
+                            <div class="calculation-details">
+                                <p>Detta visar hur mycket du har kvar varje månad efter alla bostadskostnader.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
